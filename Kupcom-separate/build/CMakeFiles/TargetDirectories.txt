@@ -1,0 +1,16 @@
+/home/neel/my_proj/build/CMakeFiles/kupcom.dir
+/home/neel/my_proj/build/CMakeFiles/edit_cache.dir
+/home/neel/my_proj/build/CMakeFiles/rebuild_cache.dir
+/home/neel/my_proj/build/CMakeFiles/list_install_components.dir
+/home/neel/my_proj/build/CMakeFiles/install.dir
+/home/neel/my_proj/build/CMakeFiles/install/local.dir
+/home/neel/my_proj/build/CMakeFiles/install/strip.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/mcl.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/mcl_st.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/msm_avx.o.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/edit_cache.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/rebuild_cache.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/list_install_components.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/install.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/install/local.dir
+/home/neel/my_proj/build/extern/mcl/CMakeFiles/install/strip.dir
