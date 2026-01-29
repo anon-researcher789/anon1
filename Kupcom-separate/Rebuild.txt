@@ -4,6 +4,7 @@ cmake ..
 make -j
 ./kupcom
 
+Refer to Clone.txt in extern folder first and then follow this.
 For running classical Kupcom primitive by itself (ideal for future works/developers etc), please run these commands from the Kupcom-separate directory.
 Please note that you may have to build the mcl library in extern first if this is you first time using this repository. 
 Details for that can be found at https://github.com/herumi/mcl
