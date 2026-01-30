@@ -13,7 +13,7 @@ For memory usage tracking please use Valgrind
 
 For Proof or Verify Times or Size, the harness should output metrics with increasing degree of polynomial.
 
-From root directory:
+From Classical Root directory for full test:
 ```
 rm -rf build
 mkdir build && cd build
