@@ -174,6 +174,101 @@ void test_eval_tamper_proof(const crypto::CommitmentKey& ck) {
 
     assert(!Check(ck, C, z, y, proof));
 }
+void test_poly_multiply() {
+    using namespace crypto;
+
+    Polynomial a, b;
+    a.coeffs = {Fr(1), Fr(1)}; // 1 + X
+    b.coeffs = {Fr(1), Fr(1)}; // 1 + X
+
+    auto c = multiply(a, b);
+
+    // expect: 1 + 2X + X^2
+    assert(c.coeffs.size() == 3);
+    assert(c.coeffs[0] == Fr(1));
+    assert(c.coeffs[1] == Fr(2));
+    assert(c.coeffs[2] == Fr(1));
+}
+crypto::Polynomial build_product_tree(std::vector<crypto::Polynomial>& polys,
+                                      size_t l, size_t r) {
+    if (l == r) return polys[l];
+
+    size_t mid = (l + r) / 2;
+
+    auto left = build_product_tree(polys, l, mid);
+    auto right = build_product_tree(polys, mid + 1, r);
+
+    return multiply(left, right);
+}
+crypto::Polynomial make_set_poly(const std::vector<Fr>& set) {
+    using namespace crypto;
+
+    std::vector<Polynomial> terms(set.size());
+
+    for (size_t i = 0; i < set.size(); i++) {
+        terms[i].coeffs.resize(2);
+        terms[i].coeffs[0] = -set[i];
+        terms[i].coeffs[1] = Fr(1);
+    }
+
+    return build_product_tree(terms, 0, terms.size() - 1);
+}
+
+    return f;
+}
+void run_set_membership_benchmark(size_t set_size) {
+    using namespace crypto;
+
+    std::cout << "\n[Set Membership Benchmark]\n";
+
+    // 1. Generate dummy set
+    std::vector<Fr> S(set_size);
+    for (auto& s : S) {
+        s.setByCSPRNG();
+    }
+
+    // pick a member
+    Fr x = S[set_size / 2];
+
+    // 2. Build polynomial
+    std::cout << "Building polynomial...\n";
+    Polynomial f = make_set_poly(S);
+
+    // 3. Setup
+    CommitmentKey ck = KGen(f.degree());
+
+    // 4. Commit
+    auto C = Commit(ck, f);
+
+    Fr y;
+    EvalProof proof;
+
+    // 5. Benchmark
+    auto result = bench::measure(
+        // prover
+        [&]() {
+            proof = Eval(ck, f, x, y); // should give y = 0
+        },
+        // verifier
+        [&]() {
+            bool ok = Check(ck, C, x, y, proof);
+            assert(ok);
+            assert(y.isZero()); // membership condition
+        }
+    );
+
+    size_t proof_bytes = proof_size_bytes(proof);
+
+    std::cout << "set_size = " << set_size << "\n";
+    std::cout << "degree = " << f.degree() << "\n";
+    std::cout << "prover_ms = " << result.prover_ms << "\n";
+    std::cout << "verifier_ms = " << result.verifier_ms << "\n";
+    std::cout << "proof_bytes = " << proof_bytes << "\n";
+
+    // Optional: memory (rough estimate)
+    size_t poly_bytes = f.coeffs.size() * sizeof(Fr);
+    std::cout << "poly_memory_bytes ≈ " << poly_bytes << "\n";
+}
 void test_iop(const crypto::CommitmentKey& ck) {
     using namespace snark::iop;
 
@@ -298,7 +393,7 @@ int main() {
     for (size_t n : {1<<10, 1<<12, 1<<14, 1<<16}) {
         run_benchmark(n);
     }
-
+    run_set_membership_benchmark(25000);
 
     return 0;
 }
