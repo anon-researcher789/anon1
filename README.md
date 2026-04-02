@@ -9,7 +9,8 @@ Simply run the following to build on your system (tested on Ubuntu Mate 24.04 LT
 
 (It will run an auto benchmark harness and all system tests)
 
-For memory usage tracking please use Valgrind
+For exact memory usage tracking please use Valgrind or use the estimate included in the benchmark scripts.
+(Some benchmark scripts are commented in the main.cpp file. Just uncomment as required for testing purposes.)
 
 For Proof or Verify Times or Size, the harness should output metrics with increasing degree of polynomial.
 
@@ -22,3 +23,4 @@ make -j
 ./kupcom
 ```
 Note: MacOS and Windows may not run this code so please use a Linux OS or Virtual Machine.
+Note: This code has not been audited so please do not use in production systems as is, as it may contain bugs.
