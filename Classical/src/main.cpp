@@ -1,6 +1,7 @@
 // main.cpp
 #include <cassert>
 #include <iostream>
+#include <vector>
 #include "crypto/kzg/kzg.hpp"
 #include "snark/iop/iop.hpp"
 #include "snark/iop/prover.cpp"
@@ -347,7 +348,83 @@ void run_benchmark(size_t degree) {
     std::cout << "verifier_ms = " << result.verifier_ms << "\n";
     std::cout << "proof_bytes = " << proof_bytes << "\n\n";
 }
+//#include <vector>
 
+/*struct Matrix {
+    size_t rows, cols;
+    std::vector<double> data;
+
+    Matrix(size_t r, size_t c) : rows(r), cols(c), data(r * c) {}
+
+    double& operator()(size_t i, size_t j) {
+        return data[i * cols + j];
+    }
+
+    const double& operator()(size_t i, size_t j) const {
+        return data[i * cols + j];
+    }
+};
+Matrix matmul(const Matrix& A, const Matrix& B) {
+    assert(A.cols == B.rows);
+
+    Matrix C(A.rows, B.cols);
+
+    for (size_t i = 0; i < A.rows; i++) {
+        for (size_t k = 0; k < A.cols; k++) {
+            for (size_t j = 0; j < B.cols; j++) {
+                C(i, j) += A(i, k) * B(k, j);
+            }
+        }
+    }
+
+    return C;
+}
+Matrix random_matrix(size_t n, size_t m) {
+    Matrix M(n, m);
+    for (auto& x : M.data) {
+        x = (double)rand() / RAND_MAX;
+    }
+    return M;
+}
+void run_matmul_benchmark(size_t n) {
+    std::cout << "\n[Matrix Multiplication Benchmark]\n";
+
+    Matrix A = random_matrix(n, n);
+    Matrix B = random_matrix(n, n);
+    Matrix C(n, n);
+
+    auto result = bench::measure(
+       
+        [&]() {
+            C = matmul(A, B);
+        },
+        
+        [&]() {
+           
+            for (int t = 0; t < 5; t++) {
+                size_t i = rand() % n;
+                size_t j = rand() % n;
+
+                double expected = 0;
+                for (size_t k = 0; k < n; k++) {
+                    expected += A(i, k) * B(k, j);
+                }
+
+                assert(std::abs(C(i, j) - expected) < 1e-6);
+            }
+        }
+    );
+
+    size_t memory_bytes =
+        A.data.size() * sizeof(double) +
+        B.data.size() * sizeof(double) +
+        C.data.size() * sizeof(double);
+
+    std::cout << "n = " << n << "\n";
+    std::cout << "compute_ms = " << result.prover_ms << "\n";
+    std::cout << "check_ms = " << result.verifier_ms << "\n";
+    std::cout << "memory_bytes ≈ " << memory_bytes << "\n\n";
+}*/
 
 int main() {
     init_crypto();
@@ -390,10 +467,15 @@ int main() {
 
     std::cout << "All tests passed ✔" << std::endl;
 
-    for (size_t n : {1<<10, 1<<12, 1<<14, 1<<16}) {
+    /*for (size_t n : {1<<10, 1<<12, 1<<14, 1<<16}) {
         run_benchmark(n);
     }
-    run_set_membership_benchmark(25000);
+    srand(0);
+
+    for (size_t n : {128, 256, 512, 1024}) {
+        run_matmul_benchmark(n);
+    }
+    run_set_membership_benchmark(25000);*/
 
     return 0;
 }
